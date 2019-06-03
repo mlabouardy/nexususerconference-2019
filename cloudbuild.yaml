@@ -1,7 +1,3 @@
-
-substitutions:
-    _NEXUS_USERNAME: 
-    _NEXUS_PASSWORD: 
 steps:
 - id: 'run quality test'
   name: "golangci/golangci-lint"
