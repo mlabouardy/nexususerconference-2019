@@ -1,0 +1,9 @@
+FROM golang:1.10.1
+LABEL Maintainer mlabouardy
+LABEL Environment test
+
+WORKDIR /go/src/github.com/mlabouardy/nexususerconference-2019
+
+COPY . .
+
+CMD go test
