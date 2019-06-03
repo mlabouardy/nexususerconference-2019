@@ -23,7 +23,7 @@ steps:
 
 - id: 'login to nexus'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['login', '--username', '${_NEXUS_USERNAME}', '--password', '${_NEXUS_PASSWORD}']
+  args: ['login', '-u', '${_NEXUS_USERNAME}', '-p', '${_NEXUS_PASSWORD}']
 
 - id: 'push image'
   name: 'gcr.io/cloud-builders/docker'
