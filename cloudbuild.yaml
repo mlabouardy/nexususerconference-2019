@@ -1,0 +1,30 @@
+
+substitutions:
+    _NEXUS_USERNAME: 
+    _NEXUS_PASSWORD: 
+steps:
+- id: 'run quality test'
+  name: "golangci/golangci-lint"
+  args: ["golangci-lint","run"]
+
+- id: 'run unit test'
+  name: 'gcr.io/cloud-builders/go'
+  args: ['test', 'app']
+  env: ['GOPATH=.']
+
+- id: 'run security checks'
+  name: "securego/gosec"
+  args: ['app']
+  env: ['GOPATH=.']
+
+- id: 'build image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'mlabouardy/app:$SHORT_SHA', '.']
+
+- id: 'login to nexus'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['login', '--username', '${_NEXUS_USERNAME}', '--password', '${_NEXUS_PASSWORD}']
+
+- id: 'push image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'mlabouardy/app:$SHORT_SHA']

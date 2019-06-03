@@ -1,0 +1,30 @@
+{
+    "linters": {
+      "enable": [
+        "deadcode",
+        "errcheck",
+        "goconst",
+        "gocyclo",
+        "gofmt",
+        "goimports",
+        "golint",
+        "ineffassign",
+        "interfacer",
+        "lll",
+        "maligned",
+        "megacheck",
+        "misspell",
+        "nakedret",
+        "structcheck",
+        "unconvert",
+        "unparam",
+        "varcheck"
+      ]
+    },
+    "linters-settings": {
+      "lll": {
+        "line-length": 120
+      }
+    }
+  }
+  

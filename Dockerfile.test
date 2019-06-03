@@ -4,6 +4,6 @@ LABEL Environment test
 
 WORKDIR /go/src/github.com/mlabouardy/nexususerconference-2019
 
-COPY . .
+COPY src/app .
 
 CMD go test
