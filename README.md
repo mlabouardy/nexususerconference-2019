@@ -3,3 +3,59 @@
 <p align="center">
     <img src="banner.png" width="80%"/>
 </p>
+
+## Configure Nexus credentials
+
+```
+kubectl create secret generic nexus --from-file=.dockerconfigjson=/home/mohamed_labouardy/.docker/config.json --type=kubernetes.io/dockerconfigjson
+```
+
+## Deploy Pod
+
+```
+kubectl apply -f pod.yml
+```
+
+## Deploy Service
+
+```
+kubectl apply -f service.yml
+```
+
+## Continuous Deployment
+
+```
+- id: 'configure kubectl'
+  name: 'gcr.io/cloud-builders/gcloud'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+    - 'KUBECONFIG=/kube/config'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      CLUSTER=$$(gcloud config get-value container/cluster)
+      PROJECT=$$(gcloud config get-value core/project)
+      ZONE=$$(gcloud config get-value compute/zone)
+      
+      gcloud container clusters get-credentials "$${CLUSTER}" \
+        --project "$${PROJECT}" \
+        --zone "$${ZONE}"
+  volumes:
+    - name: 'kube'
+      path: /kube
+
+- id: 'deploy to k8s'
+  name: 'gcr.io/cloud-builders/gcloud'
+  env:
+    - 'KUBECONFIG=/kube/config'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      kubectl apply --recursive -f deployment
+  volumes:
+    - name: 'kube'
+      path: /kube
+```

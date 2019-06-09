@@ -1,3 +1,11 @@
+#
+# User-defined substitutions:
+#   _NEXUS_USERNAME
+#   _NEXUS_PASSWORD
+#   _CLOUDSDK_COMPUTE_ZONE
+#   _CLOUDSDK_CONTAINER_CLUSTER
+#
+
 steps:
 - id: 'run quality test'
   name: "golangci/golangci-lint"
@@ -24,3 +32,37 @@ steps:
 - id: 'push image'
   name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'registry.serverlessmovies.com/mlabouardy/app:$SHORT_SHA']
+
+- id: 'configure kubectl'
+  name: 'gcr.io/cloud-builders/gcloud'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+    - 'KUBECONFIG=/kube/config'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      CLUSTER=$$(gcloud config get-value container/cluster)
+      PROJECT=$$(gcloud config get-value core/project)
+      ZONE=$$(gcloud config get-value compute/zone)
+      
+      gcloud container clusters get-credentials "$${CLUSTER}" \
+        --project "$${PROJECT}" \
+        --zone "$${ZONE}"
+  volumes:
+    - name: 'kube'
+      path: /kube
+
+- id: 'deploy to k8s'
+  name: 'gcr.io/cloud-builders/gcloud'
+  env:
+    - 'KUBECONFIG=/kube/config'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      kubectl apply --recursive -f deployment
+  volumes:
+    - name: 'kube'
+      path: /kube
