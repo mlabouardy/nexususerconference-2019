@@ -1,0 +1,37 @@
+{
+    "variables" : {
+        "zone" : "europe-west3-c",
+        "project" : "learning-223618",
+        "source_image" : "centos-7-v20181210",
+        "ssh_username" : "packer",
+        "credentials_path" : "/Users/mlabouardy/.gcp/account.json"
+    },
+    "builders" : [
+        {
+            "type": "googlecompute",
+            "account_file": "{{user `credentials_path`}}",
+            "project_id": "{{user `project`}}",
+            "source_image": "{{user `source_image`}}",
+            "ssh_username": "{{user `ssh_username`}}",
+            "zone": "{{user `zone`}}",
+            "image_name" : "nexus-v3-16-2-01"
+          }
+    ],
+    "provisioners" : [
+        {
+            "type" : "file",
+            "source" : "./nexus.rc",
+            "destination" : "/tmp/nexus.rc"
+        },
+        {
+            "type" : "file",
+            "source" : "./repository.json",
+            "destination" : "/tmp/repository.json"
+        },
+        {
+            "type" : "shell",
+            "script" : "./setup.sh",
+            "execute_command" : "sudo -E -S sh '{{ .Path }}'"
+        }
+    ]
+}

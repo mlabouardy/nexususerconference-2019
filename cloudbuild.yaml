@@ -15,12 +15,12 @@ steps:
 
 - id: 'build image'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'mlabouardy/app:$SHORT_SHA', '.']
+  args: ['build', '-t', 'registry.serverlessmovies.com/mlabouardy/app:$SHORT_SHA', '.']
 
 - id: 'login to nexus'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['login', '-u', '${_NEXUS_USERNAME}', '-p', '${_NEXUS_PASSWORD}']
+  args: ['login', 'registry.serverlessmovies.com', '-u', '${_NEXUS_USERNAME}', '-p', '${_NEXUS_PASSWORD}']
 
 - id: 'push image'
   name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'mlabouardy/app:$SHORT_SHA']
+  args: ['push', 'registry.serverlessmovies.com/mlabouardy/app:$SHORT_SHA']
