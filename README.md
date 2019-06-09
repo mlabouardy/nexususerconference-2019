@@ -35,13 +35,7 @@ kubectl apply -f service.yml
   args:
     - '-c'
     - |
-      CLUSTER=$$(gcloud config get-value container/cluster)
-      PROJECT=$$(gcloud config get-value core/project)
-      ZONE=$$(gcloud config get-value compute/zone)
-      
-      gcloud container clusters get-credentials "$${CLUSTER}" \
-        --project "$${PROJECT}" \
-        --zone "$${ZONE}"
+      gcloud container clusters get-credentials "$${CLOUDSDK_CONTAINER_CLUSTER}" --zone "$${CLOUDSDK_COMPUTE_ZONE}"
   volumes:
     - name: 'kube'
       path: /kube

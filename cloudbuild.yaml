@@ -29,9 +29,16 @@ steps:
   name: 'gcr.io/cloud-builders/docker'
   args: ['login', 'registry.serverlessmovies.com', '-u', '${_NEXUS_USERNAME}', '-p', '${_NEXUS_PASSWORD}']
 
+- id: 'tag image'
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'registry.serverlessmovies.com/mlabouardy/app:$SHORT_SHA', 'registry.serverlessmovies.com/mlabouardy/app:latest']
+
 - id: 'push image'
   name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'registry.serverlessmovies.com/mlabouardy/app:$SHORT_SHA']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'registry.serverlessmovies.com/mlabouardy/app:latest']
 
 - id: 'configure kubectl'
   name: 'gcr.io/cloud-builders/gcloud'
@@ -43,13 +50,7 @@ steps:
   args:
     - '-c'
     - |
-      CLUSTER=$$(gcloud config get-value container/cluster)
-      PROJECT=$$(gcloud config get-value core/project)
-      ZONE=$$(gcloud config get-value compute/zone)
-      
-      gcloud container clusters get-credentials "$${CLUSTER}" \
-        --project "$${PROJECT}" \
-        --zone "$${ZONE}"
+      gcloud container clusters get-credentials "$${CLOUDSDK_CONTAINER_CLUSTER}" --zone "$${CLOUDSDK_COMPUTE_ZONE}"
   volumes:
     - name: 'kube'
       path: /kube
