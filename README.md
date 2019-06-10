@@ -48,7 +48,7 @@ kubectl apply -f service.yml
   args:
     - '-c'
     - |
-      kubectl apply --recursive -f deployment
+      kubectl set image deployment/app app=registry.serverlessmovies.com/mlabouardy/app:$SHORT_SHA
   volumes:
     - name: 'kube'
       path: /kube
