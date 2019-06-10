@@ -39,3 +39,31 @@ steps:
 
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'registry.serverlessmovies.com/mlabouardy/app:latest']
+
+- id: 'configure kubectl'
+  name: 'gcr.io/cloud-builders/gcloud'
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+    - 'KUBECONFIG=/kube/config'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      gcloud container clusters get-credentials "$${CLOUDSDK_CONTAINER_CLUSTER}" --zone "$${CLOUDSDK_COMPUTE_ZONE}"
+  volumes:
+    - name: 'kube'
+      path: /kube
+
+- id: 'deploy to k8s'
+  name: 'gcr.io/cloud-builders/gcloud'
+  env:
+    - 'KUBECONFIG=/kube/config'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      kubectl set image deployment/app app=registry.serverlessmovies.com/mlabouardy/app:$SHORT_SHA
+  volumes:
+    - name: 'kube'
+      path: /kube
