@@ -10,13 +10,13 @@
 kubectl create secret generic nexus --from-file=.dockerconfigjson=/home/mohamed_labouardy/.docker/config.json --type=kubernetes.io/dockerconfigjson
 ```
 
-## Deploy Pod
+## Create Deployment
 
 ```
-kubectl apply -f pod.yml
+kubectl apply -f deployment.yml
 ```
 
-## Deploy Service
+## Create Service
 
 ```
 kubectl apply -f service.yml

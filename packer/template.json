@@ -14,7 +14,7 @@
             "source_image": "{{user `source_image`}}",
             "ssh_username": "{{user `ssh_username`}}",
             "zone": "{{user `zone`}}",
-            "image_name" : "nexus-v3-16-2-01"
+            "image_name" : "nexus-v3-16-2-02"
           }
     ],
     "provisioners" : [
