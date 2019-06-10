@@ -17,5 +17,6 @@ spec:
         image: registry.serverlessmovies.com/mlabouardy/app:latest
         ports:
         - containerPort: 3000
+        imagePullPolicy: Always
       imagePullSecrets:
       - name: nexus
