@@ -54,7 +54,6 @@ kubectl apply -f service.yml
       path: /kube
 ```
 
-
-## Maintainer 
+## Maintainer
 
 Mohamed Labouardy
